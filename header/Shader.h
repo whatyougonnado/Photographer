@@ -9,8 +9,18 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Shaders/VertexShader.h"
-#include "Shaders/FragmentShader.h"
+
+#include "../Shaders/NoTextureVertexShader.h"
+#include "../Shaders/NoTextureFragmentShader.h"
+#include "../Shaders/TextureVertexShader.h"
+#include "../Shaders/TextureFragmentShader.h"
+#include "../Shaders/FaceIdxVertexShader.h"
+#include "../Shaders/FaceIdxFragmentShader.h"
+#include "../Shaders/FlatVertexShader.h"
+#include "../Shaders/FlatFragmentShader.h"
+
+
+
 
 // Macro for a more convenient shader specification
 #define SHADER_CODE_GLSL_TO_STRING(version, shader)  "#version " #version " core \n" #shader  
@@ -21,8 +31,11 @@ public:
     // Constructor builds the shader
     enum ShaderTypes
     {
-        FULL_SHADER, 
-        SIMPLE_SHADER
+        DEFAULT_SHADER,
+        NOTEXTURE_SHADER,//without texture
+        TEXTURE_SHADER,//with texture
+        FACEIDX_SHADER, //read front face id after fragment shader is finished
+        FLAT_SHADER
     };
     Shader(ShaderTypes vertex_shader_type, ShaderTypes fragment_shader_type);
     Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
@@ -30,7 +43,6 @@ public:
     // Activate the shader
     void use();
     // working with uniforms
-    void setUniform(const std::string &name, bool value) const;
     void setUniform(const std::string &name, int value) const;
     void setUniform(const std::string &name, float value) const;
     void setUniform(const std::string &name, glm::mat4 value) const;
@@ -58,8 +70,9 @@ private:
 
         void main()
         {
+            vec3 ourColor = aColor;
+
             gl_Position = vec4(aPos, 1.0);
-            ourColor = aColor;
         }
     );
 

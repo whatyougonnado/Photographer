@@ -15,9 +15,13 @@
 class Camera
 {
 public:
+    //FORWARD is to front
+    //UP is to sky
     enum Directions {
         FORWARD,
         BACKWARD,
+        UP,
+        DOWN,
         LEFT,
         RIGHT
     };
@@ -33,11 +37,14 @@ public:
     unsigned int getID() { return ID_; }
     glm::vec3 getPosition() { return position_; }
     glm::vec3 getFrontVector() { return front_; }
-    
+
     glm::mat4 getGlViewMatrix();
     glm::mat4 getCVExtrinsicsMatrix();
     glm::mat4 getGlProjectionMatrix();
     glm::mat3 getCVIntrinsicsMatrix();
+    glm::vec4 getGlViewPortVector();
+
+    float getFovy() const;
 
     // allows to set pre-defined id
     void setID(unsigned int id) { ID_ = id; };
@@ -50,7 +57,7 @@ public:
     void updateRotation(float delta_pitch, float delta_yaw, bool constrain_pitch = true);
     void zoom(float delta);
 
-    void saveParamsForOpenCV(const std::string path = "./");
+    void saveParamsForOpenCV(const std::string path = "./", const std::string prefix = "param_");
 
 private:
     static unsigned int avalible_camera_id;

@@ -4,7 +4,7 @@
 #define SHADER_CODE_GLSL_TO_STRING(version, shader)  "#version " #version " core \n" #shader  
 #endif
 
-static const char *full_fragment_shader_source = SHADER_CODE_GLSL_TO_STRING(330,
+static const char *no_texture_fragment_shader_source = SHADER_CODE_GLSL_TO_STRING(330,
 
     struct Material {
         float shininess;

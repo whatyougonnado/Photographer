@@ -1,4 +1,4 @@
-#include "../Camera.h"
+#include "../header/Camera.h"
 
 unsigned int Camera::avalible_camera_id = 1000;
 
@@ -59,6 +59,16 @@ glm::mat3 Camera::getCVIntrinsicsMatrix()
     return intrinsics;
 }
 
+glm::vec4 Camera::getGlViewPortVector()
+{
+    return glm::vec4(0.0f, 0.0f, screen_width_, screen_height_);
+}
+
+
+float Camera::getFovy() const {
+    return field_of_view_y_;
+}
+
 void Camera::setPosition(glm::vec3 pos)
 {
     position_ = pos;
@@ -102,6 +112,12 @@ void Camera::movePosition(Directions direction, float step_size_multiplier)
             break;
         case Directions::BACKWARD:
             position_ -= front_ * velocity;
+            break;
+        case Directions::UP:
+            position_ += up_ * velocity;
+            break;
+        case Directions::DOWN:
+            position_ -= up_ * velocity;
             break;
         case Directions::RIGHT:
             position_ += right_ * velocity;
@@ -150,14 +166,14 @@ void Camera::zoom(float delta)
     if (field_of_view_y_ >= default_fov_)      field_of_view_y_ = default_fov_;
 }
 
-void Camera::saveParamsForOpenCV(const std::string path)
+void Camera::saveParamsForOpenCV(const std::string path, const std::string prefix)
 {
     glm::mat4 extrinsics = getCVExtrinsicsMatrix();
     glm::mat3 intrinsics = getCVIntrinsicsMatrix();
 
     // Save. Very hardcore approach. But no new dependencies!
     std::ofstream xml_file;
-    xml_file.open(path + "/" + std::to_string(ID_) + ".xml");
+    xml_file.open(path + "/" + prefix  +std::to_string(ID_) + ".xml");
 
     xml_file << "<?xml version=\"1.0\"?>" << std::endl
         << "<opencv_storage>" << std::endl;
